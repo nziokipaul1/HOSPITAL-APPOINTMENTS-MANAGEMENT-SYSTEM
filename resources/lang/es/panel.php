@@ -1,5 +1,5 @@
 <?php
 
 return [
-    'site_title' => 'HOSPITAL APPOINTMENT MANAGEMENT SYSTEM',
+    'site_title' => 'Ghepa Appointments System',
 ];

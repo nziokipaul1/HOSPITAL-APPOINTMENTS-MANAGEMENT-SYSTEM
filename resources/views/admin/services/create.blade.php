@@ -9,64 +9,30 @@
     <div class="card-body">
         <form action="{{ route("admin.services.store") }}" method="POST" enctype="multipart/form-data">
             @csrf
-            <div class="form-group {{ $errors->has('name') ? 'has-error' : '' }}">
-                <label for="name">{{ trans('cruds.service.fields.name') }}*</label>
-                <input type="text" id="name" name="name" class="form-control" value="{{ old('name', isset($service) ? $service->name : '') }}" required>
-                @if($errors->has('name'))
+            <div class="form-group {{ $errors->has('name_of_the_service') ? 'has-error' : '' }}">
+                <label for="name_of_the_service">{{ trans('cruds.service.fields.name_of_the_service') }}*</label>
+                <input type="text" id="name_of_the_service" name="name_of_the_service" class="form-control" value="{{ old('name_of_the_service', isset($service) ? $service->name_of_the_service : '') }}" required>
+                @if($errors->has('name_of_the_service'))
                     <p class="help-block">
-                        {{ $errors->first('name') }}
+                        {{ $errors->first('name_of_the_service') }}
                     </p>
                 @endif
                 <p class="helper-block">
-                    {{ trans('cruds.service.fields.name_helper') }}
+                    {{ trans('cruds.service.fields.name_of_the_service_helper') }}
                 </p>
             </div>
-            <div class="form-group {{ $errors->has('hospitals_offerings') ? 'has-error' : '' }}">
-                <label for="hospitals_offering">{{ trans('cruds.service.fields.hospitals_offering') }}
-                    <span class="btn btn-info btn-xs select-all">{{ trans('global.select_all') }}</span>
-                    <span class="btn btn-info btn-xs deselect-all">{{ trans('global.deselect_all') }}</span></label>
-                <select name="hospitals_offerings[]" id="hospitals_offerings" class="form-control select2" multiple="multiple">
-                    @foreach($hospitals_offerings as $id => $hospitals_offering)
-                        <option value="{{ $id }}" {{ (in_array($id, old('hospitals_offerings', [])) || isset($service) && $service->hospitals_offerings->contains($id)) ? 'selected' : '' }}>{{ $hospitals_offering }}</option>
-                    @endforeach
-                </select>
-                @if($errors->has('hospitals_offerings'))
+            <div class="form-group {{ $errors->has('photo') ? 'has-error' : '' }}">
+                <label for="photo">{{ trans('cruds.service.fields.photo') }}</label>
+                <div class="needsclick dropzone" id="photo-dropzone">
+
+                </div>
+                @if($errors->has('photo'))
                     <p class="help-block">
-                        {{ $errors->first('hospitals_offerings') }}
+                        {{ $errors->first('photo') }}
                     </p>
                 @endif
                 <p class="helper-block">
-                    {{ trans('cruds.service.fields.hospitals_offering_helper') }}
-                </p>
-            </div>
-            <div class="form-group {{ $errors->has('doctors_offering_services') ? 'has-error' : '' }}">
-                <label for="doctors_offering_service">{{ trans('cruds.service.fields.doctors_offering_service') }}*
-                    <span class="btn btn-info btn-xs select-all">{{ trans('global.select_all') }}</span>
-                    <span class="btn btn-info btn-xs deselect-all">{{ trans('global.deselect_all') }}</span></label>
-                <select name="doctors_offering_services[]" id="doctors_offering_services" class="form-control select2" multiple="multiple" required>
-                    @foreach($doctors_offering_services as $id => $doctors_offering_service)
-                        <option value="{{ $id }}" {{ (in_array($id, old('doctors_offering_services', [])) || isset($service) && $service->doctors_offering_services->contains($id)) ? 'selected' : '' }}>{{ $doctors_offering_service }}</option>
-                    @endforeach
-                </select>
-                @if($errors->has('doctors_offering_services'))
-                    <p class="help-block">
-                        {{ $errors->first('doctors_offering_services') }}
-                    </p>
-                @endif
-                <p class="helper-block">
-                    {{ trans('cruds.service.fields.doctors_offering_service_helper') }}
-                </p>
-            </div>
-            <div class="form-group {{ $errors->has('cost') ? 'has-error' : '' }}">
-                <label for="cost">{{ trans('cruds.service.fields.cost') }}</label>
-                <input type="text" id="cost" name="cost" class="form-control" value="{{ old('cost', isset($service) ? $service->cost : '') }}">
-                @if($errors->has('cost'))
-                    <p class="help-block">
-                        {{ $errors->first('cost') }}
-                    </p>
-                @endif
-                <p class="helper-block">
-                    {{ trans('cruds.service.fields.cost_helper') }}
+                    {{ trans('cruds.service.fields.photo_helper') }}
                 </p>
             </div>
             <div>
@@ -76,3 +42,67 @@
     </div>
 </div>
 @endsection
+
+@section('scripts')
+<script>
+    var uploadedPhotoMap = {}
+Dropzone.options.photoDropzone = {
+    url: '{{ route('admin.services.storeMedia') }}',
+    maxFilesize: 5, // MB
+    acceptedFiles: '.jpeg,.jpg,.png,.gif',
+    addRemoveLinks: true,
+    headers: {
+      'X-CSRF-TOKEN': "{{ csrf_token() }}"
+    },
+    params: {
+      size: 5,
+      width: 4096,
+      height: 4096
+    },
+    success: function (file, response) {
+      $('form').append('<input type="hidden" name="photo[]" value="' + response.name + '">')
+      uploadedPhotoMap[file.name] = response.name
+    },
+    removedfile: function (file) {
+      console.log(file)
+      file.previewElement.remove()
+      var name = ''
+      if (typeof file.file_name !== 'undefined') {
+        name = file.file_name
+      } else {
+        name = uploadedPhotoMap[file.name]
+      }
+      $('form').find('input[name="photo[]"][value="' + name + '"]').remove()
+    },
+    init: function () {
+@if(isset($service) && $service->photo)
+      var files =
+        {!! json_encode($service->photo) !!}
+          for (var i in files) {
+          var file = files[i]
+          this.options.addedfile.call(this, file)
+          this.options.thumbnail.call(this, file, file.url)
+          file.previewElement.classList.add('dz-complete')
+          $('form').append('<input type="hidden" name="photo[]" value="' + file.file_name + '">')
+        }
+@endif
+    },
+     error: function (file, response) {
+         if ($.type(response) === 'string') {
+             var message = response //dropzone sends it's own error messages in string
+         } else {
+             var message = response.errors.file
+         }
+         file.previewElement.classList.add('dz-error')
+         _ref = file.previewElement.querySelectorAll('[data-dz-errormessage]')
+         _results = []
+         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+             node = _ref[_i]
+             _results.push(node.textContent = message)
+         }
+
+         return _results
+     }
+}
+</script>
+@stop

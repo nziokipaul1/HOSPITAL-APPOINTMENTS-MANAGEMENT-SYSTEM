@@ -19,22 +19,9 @@ class UpdateServiceRequest extends FormRequest
     public function rules()
     {
         return [
-            'name'                        => [
+            'name_of_the_service' => [
                 'required',
-                'unique:services,name,' . request()->route('service')->id,
-            ],
-            'hospitals_offerings.*'       => [
-                'integer',
-            ],
-            'hospitals_offerings'         => [
-                'array',
-            ],
-            'doctors_offering_services.*' => [
-                'integer',
-            ],
-            'doctors_offering_services'   => [
-                'required',
-                'array',
+                'unique:services,name_of_the_service,' . request()->route('service')->id,
             ],
         ];
     }
