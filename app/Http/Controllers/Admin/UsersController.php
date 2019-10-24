@@ -7,6 +7,7 @@ use App\Http\Controllers\Traits\MediaUploadingTrait;
 use App\Http\Requests\MassDestroyUserRequest;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Role;
 use App\User;
 use Gate;
 use Illuminate\Http\Request;
@@ -29,7 +30,9 @@ class UsersController extends Controller
     {
         abort_if(Gate::denies('user_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return view('admin.users.create');
+        $roles = Role::all()->pluck('title', 'id');
+
+        return view('admin.users.create', compact('roles'));
     }
 
     public function store(StoreUserRequest $request)
@@ -48,9 +51,11 @@ class UsersController extends Controller
     {
         abort_if(Gate::denies('user_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
+        $roles = Role::all()->pluck('title', 'id');
+
         $user->load('roles');
 
-        return view('admin.users.edit', compact('user'));
+        return view('admin.users.edit', compact('roles', 'user'));
     }
 
     public function update(UpdateUserRequest $request, User $user)

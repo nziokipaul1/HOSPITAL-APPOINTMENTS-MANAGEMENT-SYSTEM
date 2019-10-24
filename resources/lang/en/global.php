@@ -28,6 +28,7 @@ return [
     'register'                             => 'Register',
     'remember_me'                          => 'Remember me',
     'reset_password'                       => 'Reset Password',
+    'send_password'                        => 'Send Password Reset Link',
     'save'                                 => 'Save',
     'search'                               => 'Search',
     'searching'                            => 'Searching',
@@ -245,6 +246,7 @@ return [
     'y_axis_field'                         => 'Y-axis field',
     'you_have_no_messages'                 => 'You have no messages.',
     'content'                              => 'Content',
+    'no_alerts'                            => 'No alerts',
     'calendar'                             => 'Calendar',
     'messenger'                            => 'Messenger',
 ];

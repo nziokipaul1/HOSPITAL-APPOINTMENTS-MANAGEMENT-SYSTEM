@@ -15,54 +15,106 @@
     </div>
 
     <div class="card-body">
-        <table class=" table table-bordered table-striped table-hover ajaxTable datatable datatable-Appointment">
-            <thead>
-                <tr>
-                    <th width="10">
+        <div class="table-responsive">
+            <table class=" table table-bordered table-striped table-hover datatable datatable-Appointment">
+                <thead>
+                    <tr>
+                        <th width="10">
 
-                    </th>
-                    <th>
-                        {{ trans('cruds.appointment.fields.id') }}
-                    </th>
-                    <th>
-                        {{ trans('cruds.appointment.fields.client') }}
-                    </th>
-                    <th>
-                        {{ trans('cruds.user.fields.email') }}
-                    </th>
-                    <th>
-                        {{ trans('cruds.appointment.fields.service_booked') }}
-                    </th>
-                    <th>
-                        {{ trans('cruds.appointment.fields.doctor') }}
-                    </th>
-                    <th>
-                        {{ trans('cruds.appointment.fields.hospital') }}
-                    </th>
-                    <th>
-                        {{ trans('cruds.manageHospital.fields.address') }}
-                    </th>
-                    <th>
-                        {{ trans('cruds.appointment.fields.date_and_time') }}
-                    </th>
-                    <th>
-                        {{ trans('cruds.appointment.fields.branch') }}
-                    </th>
-                    <th>
-                        {{ trans('cruds.manageBranch.fields.branch_address') }}
-                    </th>
-                    <th>
-                        {{ trans('cruds.appointment.fields.is_completed') }}
-                    </th>
-                    <th>
-                        {{ trans('cruds.appointment.fields.rescheduled_to') }}
-                    </th>
-                    <th>
-                        &nbsp;
-                    </th>
-                </tr>
-            </thead>
-        </table>
+                        </th>
+                        <th>
+                            {{ trans('cruds.appointment.fields.id') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.appointment.fields.hospital') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.appointment.fields.department') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.appointment.fields.doctor') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.appointment.fields.client') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.user.fields.phone') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.appointment.fields.scheduled_time') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.appointment.fields.rescheduled_to') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.appointment.fields.status') }}
+                        </th>
+                        <th>
+                            &nbsp;
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($appointments as $key => $appointment)
+                        <tr data-entry-id="{{ $appointment->id }}">
+                            <td>
+
+                            </td>
+                            <td>
+                                {{ $appointment->id ?? '' }}
+                            </td>
+                            <td>
+                                {{ $appointment->hospital->email ?? '' }}
+                            </td>
+                            <td>
+                                {{ $appointment->department->name_of_the_service ?? '' }}
+                            </td>
+                            <td>
+                                {{ $appointment->doctor->specialty ?? '' }}
+                            </td>
+                            <td>
+                                {{ $appointment->client->name ?? '' }}
+                            </td>
+                            <td>
+                                {{ $appointment->client->phone ?? '' }}
+                            </td>
+                            <td>
+                                {{ $appointment->scheduled_time ?? '' }}
+                            </td>
+                            <td>
+                                {{ $appointment->rescheduled_to ?? '' }}
+                            </td>
+                            <td>
+                                {{ App\Appointment::STATUS_SELECT[$appointment->status] ?? '' }}
+                            </td>
+                            <td>
+                                @can('appointment_show')
+                                    <a class="btn btn-xs btn-primary" href="{{ route('admin.appointments.show', $appointment->id) }}">
+                                        {{ trans('global.view') }}
+                                    </a>
+                                @endcan
+
+                                @can('appointment_edit')
+                                    <a class="btn btn-xs btn-info" href="{{ route('admin.appointments.edit', $appointment->id) }}">
+                                        {{ trans('global.edit') }}
+                                    </a>
+                                @endcan
+
+                                @can('appointment_delete')
+                                    <form action="{{ route('admin.appointments.destroy', $appointment->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
+                                        <input type="hidden" name="_method" value="DELETE">
+                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                        <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
+                                    </form>
+                                @endcan
+
+                            </td>
+
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 @endsection
@@ -72,14 +124,14 @@
     $(function () {
   let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
 @can('appointment_delete')
-  let deleteButtonTrans = '{{ trans('global.datatables.delete') }}';
+  let deleteButtonTrans = '{{ trans('global.datatables.delete') }}'
   let deleteButton = {
     text: deleteButtonTrans,
     url: "{{ route('admin.appointments.massDestroy') }}",
     className: 'btn-danger',
     action: function (e, dt, node, config) {
-      var ids = $.map(dt.rows({ selected: true }).data(), function (entry) {
-          return entry.id
+      var ids = $.map(dt.rows({ selected: true }).nodes(), function (entry) {
+          return $(entry).data('entry-id')
       });
 
       if (ids.length === 0) {
@@ -101,38 +153,16 @@
   dtButtons.push(deleteButton)
 @endcan
 
-  let dtOverrideGlobals = {
-    buttons: dtButtons,
-    processing: true,
-    serverSide: true,
-    retrieve: true,
-    aaSorting: [],
-    ajax: "{{ route('admin.appointments.index') }}",
-    columns: [
-      { data: 'placeholder', name: 'placeholder' },
-{ data: 'id', name: 'id' },
-{ data: 'client_name', name: 'client.name' },
-{ data: 'client.email', name: 'client.email' },
-{ data: 'service_booked_name', name: 'service_booked.name' },
-{ data: 'doctor_name', name: 'doctor.name' },
-{ data: 'hospital_name', name: 'hospital.name' },
-{ data: 'hospital.address', name: 'hospital.address' },
-{ data: 'date_and_time', name: 'date_and_time' },
-{ data: 'branch_name', name: 'branch.name' },
-{ data: 'branch.branch_address', name: 'branch.branch_address' },
-{ data: 'is_completed', name: 'is_completed' },
-{ data: 'rescheduled_to', name: 'rescheduled_to' },
-{ data: 'actions', name: '{{ trans('global.actions') }}' }
-    ],
+  $.extend(true, $.fn.dataTable.defaults, {
     order: [[ 1, 'desc' ]],
     pageLength: 100,
-  };
-  $('.datatable-Appointment').DataTable(dtOverrideGlobals);
+  });
+  $('.datatable-Appointment:not(.ajaxTable)').DataTable({ buttons: dtButtons })
     $('a[data-toggle="tab"]').on('shown.bs.tab', function(e){
         $($.fn.dataTable.tables(true)).DataTable()
             .columns.adjust();
     });
-});
+})
 
 </script>
 @endsection
