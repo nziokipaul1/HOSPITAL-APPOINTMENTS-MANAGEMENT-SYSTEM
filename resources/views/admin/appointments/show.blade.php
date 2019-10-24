@@ -20,6 +20,30 @@
                     </tr>
                     <tr>
                         <th>
+                            {{ trans('cruds.appointment.fields.hospital') }}
+                        </th>
+                        <td>
+                            {{ $appointment->hospital->email ?? '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.appointment.fields.department') }}
+                        </th>
+                        <td>
+                            {{ $appointment->department->name_of_the_service ?? '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.appointment.fields.doctor') }}
+                        </th>
+                        <td>
+                            {{ $appointment->doctor->specialty ?? '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
                             {{ trans('cruds.appointment.fields.client') }}
                         </th>
                         <td>
@@ -28,50 +52,10 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.appointment.fields.service_booked') }}
+                            {{ trans('cruds.appointment.fields.scheduled_time') }}
                         </th>
                         <td>
-                            {{ $appointment->service_booked->name ?? '' }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            {{ trans('cruds.appointment.fields.doctor') }}
-                        </th>
-                        <td>
-                            {{ $appointment->doctor->name ?? '' }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            {{ trans('cruds.appointment.fields.hospital') }}
-                        </th>
-                        <td>
-                            {{ $appointment->hospital->name ?? '' }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            {{ trans('cruds.appointment.fields.date_and_time') }}
-                        </th>
-                        <td>
-                            {{ $appointment->date_and_time }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            {{ trans('cruds.appointment.fields.branch') }}
-                        </th>
-                        <td>
-                            {{ $appointment->branch->name ?? '' }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            {{ trans('cruds.appointment.fields.is_completed') }}
-                        </th>
-                        <td>
-                            <input type="checkbox" disabled {{ $appointment->is_completed ? "checked" : "" }}>
+                            {{ $appointment->scheduled_time }}
                         </td>
                     </tr>
                     <tr>
@@ -80,6 +64,14 @@
                         </th>
                         <td>
                             {{ $appointment->rescheduled_to }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.appointment.fields.status') }}
+                        </th>
+                        <td>
+                            {{ App\Appointment::STATUS_SELECT[$appointment->status] ?? '' }}
                         </td>
                     </tr>
                 </tbody>

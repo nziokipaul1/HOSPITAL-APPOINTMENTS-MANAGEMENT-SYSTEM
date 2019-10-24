@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Employee;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Traits\MediaUploadingTrait;
 use App\Http\Requests\MassDestroyServiceRequest;
 use App\Http\Requests\StoreServiceRequest;
 use App\Http\Requests\UpdateServiceRequest;
-use App\ManageHospital;
 use App\Service;
 use Gate;
 use Illuminate\Http\Request;
@@ -15,6 +14,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ServicesController extends Controller
 {
+    use MediaUploadingTrait;
+
     public function index()
     {
         abort_if(Gate::denies('service_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
@@ -28,18 +29,16 @@ class ServicesController extends Controller
     {
         abort_if(Gate::denies('service_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $hospitals_offerings = ManageHospital::all()->pluck('name', 'id');
-
-        $doctors_offering_services = Employee::all()->pluck('name', 'id');
-
-        return view('admin.services.create', compact('hospitals_offerings', 'doctors_offering_services'));
+        return view('admin.services.create');
     }
 
     public function store(StoreServiceRequest $request)
     {
         $service = Service::create($request->all());
-        $service->hospitals_offerings()->sync($request->input('hospitals_offerings', []));
-        $service->doctors_offering_services()->sync($request->input('doctors_offering_services', []));
+
+        foreach ($request->input('photo', []) as $file) {
+            $service->addMedia(storage_path('tmp/uploads/' . $file))->toMediaCollection('photo');
+        }
 
         return redirect()->route('admin.services.index');
     }
@@ -48,20 +47,28 @@ class ServicesController extends Controller
     {
         abort_if(Gate::denies('service_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $hospitals_offerings = ManageHospital::all()->pluck('name', 'id');
-
-        $doctors_offering_services = Employee::all()->pluck('name', 'id');
-
-        $service->load('hospitals_offerings', 'doctors_offering_services');
-
-        return view('admin.services.edit', compact('hospitals_offerings', 'doctors_offering_services', 'service'));
+        return view('admin.services.edit', compact('service'));
     }
 
     public function update(UpdateServiceRequest $request, Service $service)
     {
         $service->update($request->all());
-        $service->hospitals_offerings()->sync($request->input('hospitals_offerings', []));
-        $service->doctors_offering_services()->sync($request->input('doctors_offering_services', []));
+
+        if (count($service->photo) > 0) {
+            foreach ($service->photo as $media) {
+                if (!in_array($media->file_name, $request->input('photo', []))) {
+                    $media->delete();
+                }
+            }
+        }
+
+        $media = $service->photo->pluck('file_name')->toArray();
+
+        foreach ($request->input('photo', []) as $file) {
+            if (count($media) === 0 || !in_array($file, $media)) {
+                $service->addMedia(storage_path('tmp/uploads/' . $file))->toMediaCollection('photo');
+            }
+        }
 
         return redirect()->route('admin.services.index');
     }
@@ -69,8 +76,6 @@ class ServicesController extends Controller
     public function show(Service $service)
     {
         abort_if(Gate::denies('service_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
-        $service->load('hospitals_offerings', 'doctors_offering_services');
 
         return view('admin.services.show', compact('service'));
     }

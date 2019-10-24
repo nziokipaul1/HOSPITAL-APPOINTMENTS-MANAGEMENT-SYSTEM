@@ -11,30 +11,19 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
     Route::post('users/media', 'UsersApiController@storeMedia')->name('users.storeMedia');
     Route::apiResource('users', 'UsersApiController');
 
-    // Managehospitals
-    Route::apiResource('manage-hospitals', 'ManageHospitalsApiController');
+    // Hospitals
+    Route::post('hospitals/media', 'HospitalApiController@storeMedia')->name('hospitals.storeMedia');
+    Route::apiResource('hospitals', 'HospitalApiController');
 
-    // Taskstatuses
-    Route::apiResource('task-statuses', 'TaskStatusApiController');
-
-    // Tasktags
-    Route::apiResource('task-tags', 'TaskTagApiController');
-
-    // Tasks
-    Route::post('tasks/media', 'TaskApiController@storeMedia')->name('tasks.storeMedia');
-    Route::apiResource('tasks', 'TaskApiController');
-
-    // Taskscalendars
-    Route::apiResource('tasks-calendars', 'TasksCalendarApiController', ['except' => ['store', 'show', 'update', 'destroy']]);
-
-    // Managebranches
-    Route::apiResource('manage-branches', 'ManageBranchesApiController');
-
-    // Employees
-    Route::apiResource('employees', 'EmployeesApiController');
+    // Branches
+    Route::apiResource('branches', 'BranchApiController');
 
     // Services
+    Route::post('services/media', 'ServicesApiController@storeMedia')->name('services.storeMedia');
     Route::apiResource('services', 'ServicesApiController');
+
+    // Doctors
+    Route::apiResource('doctors', 'DoctorsApiController');
 
     // Appointments
     Route::apiResource('appointments', 'AppointmentsApiController');

@@ -72,38 +72,26 @@
                         </ul>
                     </li>
                 @endcan
-                @can('manage_hospital_access')
+                @can('hospital_access')
                     <li class="nav-item">
-                        <a href="{{ route("admin.manage-hospitals.index") }}" class="nav-link {{ request()->is('admin/manage-hospitals') || request()->is('admin/manage-hospitals/*') ? 'active' : '' }}">
+                        <a href="{{ route("admin.hospitals.index") }}" class="nav-link {{ request()->is('admin/hospitals') || request()->is('admin/hospitals/*') ? 'active' : '' }}">
                             <i class="fa-fw fas fa-hospital-symbol">
 
                             </i>
                             <p>
-                                <span>{{ trans('cruds.manageHospital.title') }}</span>
+                                <span>{{ trans('cruds.hospital.title') }}</span>
                             </p>
                         </a>
                     </li>
                 @endcan
-                @can('manage_branch_access')
+                @can('branch_access')
                     <li class="nav-item">
-                        <a href="{{ route("admin.manage-branches.index") }}" class="nav-link {{ request()->is('admin/manage-branches') || request()->is('admin/manage-branches/*') ? 'active' : '' }}">
-                            <i class="fa-fw fas fa-code-branch">
+                        <a href="{{ route("admin.branches.index") }}" class="nav-link {{ request()->is('admin/branches') || request()->is('admin/branches/*') ? 'active' : '' }}">
+                            <i class="fa-fw fas fa-hospital-symbol">
 
                             </i>
                             <p>
-                                <span>{{ trans('cruds.manageBranch.title') }}</span>
-                            </p>
-                        </a>
-                    </li>
-                @endcan
-                @can('employee_access')
-                    <li class="nav-item">
-                        <a href="{{ route("admin.employees.index") }}" class="nav-link {{ request()->is('admin/employees') || request()->is('admin/employees/*') ? 'active' : '' }}">
-                            <i class="fa-fw fas fa-cogs">
-
-                            </i>
-                            <p>
-                                <span>{{ trans('cruds.employee.title') }}</span>
+                                <span>{{ trans('cruds.branch.title') }}</span>
                             </p>
                         </a>
                     </li>
@@ -111,11 +99,23 @@
                 @can('service_access')
                     <li class="nav-item">
                         <a href="{{ route("admin.services.index") }}" class="nav-link {{ request()->is('admin/services') || request()->is('admin/services/*') ? 'active' : '' }}">
-                            <i class="fa-fw fab fa-servicestack">
+                            <i class="fa-fw fas fa-prescription-bottle-alt">
 
                             </i>
                             <p>
                                 <span>{{ trans('cruds.service.title') }}</span>
+                            </p>
+                        </a>
+                    </li>
+                @endcan
+                @can('doctor_access')
+                    <li class="nav-item">
+                        <a href="{{ route("admin.doctors.index") }}" class="nav-link {{ request()->is('admin/doctors') || request()->is('admin/doctors/*') ? 'active' : '' }}">
+                            <i class="fa-fw fas fa-user-md">
+
+                            </i>
+                            <p>
+                                <span>{{ trans('cruds.doctor.title') }}</span>
                             </p>
                         </a>
                     </li>
@@ -132,91 +132,40 @@
                         </a>
                     </li>
                 @endcan
-                @can('setting_access')
+                @can('profile_access')
                     <li class="nav-item">
-                        <a href="{{ route("admin.settings.index") }}" class="nav-link {{ request()->is('admin/settings') || request()->is('admin/settings/*') ? 'active' : '' }}">
-                            <i class="fa-fw fas fa-cogs">
+                        <a href="{{ route("admin.profiles.index") }}" class="nav-link {{ request()->is('admin/profiles') || request()->is('admin/profiles/*') ? 'active' : '' }}">
+                            <i class="fa-fw fas fa-user-alt">
 
                             </i>
                             <p>
-                                <span>{{ trans('cruds.setting.title') }}</span>
+                                <span>{{ trans('cruds.profile.title') }}</span>
                             </p>
                         </a>
                     </li>
                 @endcan
-                @can('task_management_access')
-                    <li class="nav-item has-treeview {{ request()->is('admin/task-statuses*') ? 'menu-open' : '' }} {{ request()->is('admin/task-tags*') ? 'menu-open' : '' }} {{ request()->is('admin/tasks*') ? 'menu-open' : '' }} {{ request()->is('admin/tasks-calendars*') ? 'menu-open' : '' }}">
-                        <a class="nav-link nav-dropdown-toggle" href="#">
-                            <i class="fa-fw fas fa-list">
+                @php($unread = \App\QaTopic::unreadCount())
+                    <li class="nav-item">
+                        <a href="{{ route("admin.messenger.index") }}" class="{{ request()->is('admin/messenger') || request()->is('admin/messenger/*') ? 'active' : '' }} nav-link">
+                            <i class="fa-fw fa fa-envelope">
 
                             </i>
+                            <span>{{ trans('global.messages') }}</span>
+                            @if($unread > 0)
+                                <strong>( {{ $unread }} )</strong>
+                            @endif
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" onclick="event.preventDefault(); document.getElementById('logoutform').submit();">
                             <p>
-                                <span>{{ trans('cruds.taskManagement.title') }}</span>
-                                <i class="right fa fa-fw fa-angle-left"></i>
+                                <i class="fas fa-fw fa-sign-out-alt">
+
+                                </i>
+                                <span>{{ trans('global.logout') }}</span>
                             </p>
                         </a>
-                        <ul class="nav nav-treeview">
-                            @can('task_status_access')
-                                <li class="nav-item">
-                                    <a href="{{ route("admin.task-statuses.index") }}" class="nav-link {{ request()->is('admin/task-statuses') || request()->is('admin/task-statuses/*') ? 'active' : '' }}">
-                                        <i class="fa-fw fas fa-server">
-
-                                        </i>
-                                        <p>
-                                            <span>{{ trans('cruds.taskStatus.title') }}</span>
-                                        </p>
-                                    </a>
-                                </li>
-                            @endcan
-                            @can('task_tag_access')
-                                <li class="nav-item">
-                                    <a href="{{ route("admin.task-tags.index") }}" class="nav-link {{ request()->is('admin/task-tags') || request()->is('admin/task-tags/*') ? 'active' : '' }}">
-                                        <i class="fa-fw fas fa-server">
-
-                                        </i>
-                                        <p>
-                                            <span>{{ trans('cruds.taskTag.title') }}</span>
-                                        </p>
-                                    </a>
-                                </li>
-                            @endcan
-                            @can('task_access')
-                                <li class="nav-item">
-                                    <a href="{{ route("admin.tasks.index") }}" class="nav-link {{ request()->is('admin/tasks') || request()->is('admin/tasks/*') ? 'active' : '' }}">
-                                        <i class="fa-fw fas fa-briefcase">
-
-                                        </i>
-                                        <p>
-                                            <span>{{ trans('cruds.task.title') }}</span>
-                                        </p>
-                                    </a>
-                                </li>
-                            @endcan
-                            @can('tasks_calendar_access')
-                                <li class="nav-item">
-                                    <a href="{{ route("admin.tasks-calendars.index") }}" class="nav-link {{ request()->is('admin/tasks-calendars') || request()->is('admin/tasks-calendars/*') ? 'active' : '' }}">
-                                        <i class="fa-fw fas fa-calendar">
-
-                                        </i>
-                                        <p>
-                                            <span>{{ trans('cruds.tasksCalendar.title') }}</span>
-                                        </p>
-                                    </a>
-                                </li>
-                            @endcan
-                        </ul>
                     </li>
-                @endcan
-                <li class="nav-item">
-                    <a href="#" class="nav-link" onclick="event.preventDefault(); document.getElementById('logoutform').submit();">
-                        <p>
-                            <i class="fas fa-fw fa-sign-out-alt">
-
-                            </i>
-                            <span>{{ trans('global.logout') }}</span>
-                        </p>
-                    </a>
-                </li>
             </ul>
         </nav>
         <!-- /.sidebar-menu -->

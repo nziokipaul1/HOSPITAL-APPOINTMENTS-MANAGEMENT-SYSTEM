@@ -20,38 +20,22 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.service.fields.name') }}
+                            {{ trans('cruds.service.fields.name_of_the_service') }}
                         </th>
                         <td>
-                            {{ $service->name }}
+                            {{ $service->name_of_the_service }}
                         </td>
                     </tr>
                     <tr>
                         <th>
-                            Hospitals Offering
+                            {{ trans('cruds.service.fields.photo') }}
                         </th>
                         <td>
-                            @foreach($service->hospitals_offerings as $id => $hospitals_offering)
-                                <span class="label label-info label-many">{{ $hospitals_offering->name }}</span>
+                            @foreach($service->photo as $key => $media)
+                                <a href="{{ $media->getUrl() }}" target="_blank">
+                                    <img src="{{ $media->getUrl('thumb') }}" width="50px" height="50px">
+                                </a>
                             @endforeach
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            Doctors Offering Service
-                        </th>
-                        <td>
-                            @foreach($service->doctors_offering_services as $id => $doctors_offering_service)
-                                <span class="label label-info label-many">{{ $doctors_offering_service->name }}</span>
-                            @endforeach
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            {{ trans('cruds.service.fields.cost') }}
-                        </th>
-                        <td>
-                            {{ $service->cost }}
                         </td>
                     </tr>
                 </tbody>

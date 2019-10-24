@@ -26,13 +26,10 @@
                             {{ trans('cruds.service.fields.id') }}
                         </th>
                         <th>
-                            {{ trans('cruds.service.fields.name') }}
+                            {{ trans('cruds.service.fields.name_of_the_service') }}
                         </th>
                         <th>
-                            {{ trans('cruds.service.fields.hospitals_offering') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.service.fields.doctors_offering_service') }}
+                            {{ trans('cruds.service.fields.photo') }}
                         </th>
                         <th>
                             &nbsp;
@@ -49,17 +46,16 @@
                                 {{ $service->id ?? '' }}
                             </td>
                             <td>
-                                {{ $service->name ?? '' }}
+                                {{ $service->name_of_the_service ?? '' }}
                             </td>
                             <td>
-                                @foreach($service->hospitals_offerings as $key => $item)
-                                    <span class="badge badge-info">{{ $item->name }}</span>
-                                @endforeach
-                            </td>
-                            <td>
-                                @foreach($service->doctors_offering_services as $key => $item)
-                                    <span class="badge badge-info">{{ $item->name }}</span>
-                                @endforeach
+                                @if($service->photo)
+                                    @foreach($service->photo as $key => $media)
+                                        <a href="{{ $media->getUrl() }}" target="_blank">
+                                            <img src="{{ $media->getUrl('thumb') }}" width="50px" height="50px">
+                                        </a>
+                                    @endforeach
+                                @endif
                             </td>
                             <td>
                                 @can('service_show')
