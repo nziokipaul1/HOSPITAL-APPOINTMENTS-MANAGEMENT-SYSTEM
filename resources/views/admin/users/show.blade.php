@@ -28,10 +28,18 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.user.fields.phone_number') }}
+                            {{ trans('cruds.user.fields.other_names') }}
                         </th>
                         <td>
-                            {{ $user->phone_number }}
+                            {{ $user->other_names }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.user.fields.phone') }}
+                        </th>
+                        <td>
+                            {{ $user->phone }}
                         </td>
                     </tr>
                     <tr>
@@ -44,10 +52,22 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.user.fields.email_verified_at') }}
+                            {{ trans('cruds.user.fields.verified') }}
                         </th>
                         <td>
-                            {{ $user->email_verified_at }}
+                            <input type="checkbox" disabled {{ $user->verified ? "checked" : "" }}>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.user.fields.profile_photo') }}
+                        </th>
+                        <td>
+                            @if($user->profile_photo)
+                                <a href="{{ $user->profile_photo->getUrl() }}" target="_blank">
+                                    <img src="{{ $user->profile_photo->getUrl('thumb') }}" width="50px" height="50px">
+                                </a>
+                            @endif
                         </td>
                     </tr>
                     <tr>
@@ -62,14 +82,10 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.user.fields.profile_photo') }}
+                            {{ trans('cruds.user.fields.email_verified_at') }}
                         </th>
                         <td>
-                            @if($user->profile_photo)
-                                <a href="{{ $user->profile_photo->getUrl() }}" target="_blank">
-                                    <img src="{{ $user->profile_photo->getUrl('thumb') }}" width="50px" height="50px">
-                                </a>
-                            @endif
+                            {{ $user->email_verified_at }}
                         </td>
                     </tr>
                 </tbody>

@@ -29,19 +29,25 @@
                             {{ trans('cruds.user.fields.name') }}
                         </th>
                         <th>
-                            {{ trans('cruds.user.fields.phone_number') }}
+                            {{ trans('cruds.user.fields.other_names') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.user.fields.phone') }}
                         </th>
                         <th>
                             {{ trans('cruds.user.fields.email') }}
                         </th>
                         <th>
-                            {{ trans('cruds.user.fields.email_verified_at') }}
+                            {{ trans('cruds.user.fields.verified') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.user.fields.profile_photo') }}
                         </th>
                         <th>
                             {{ trans('cruds.user.fields.roles') }}
                         </th>
                         <th>
-                            {{ trans('cruds.user.fields.profile_photo') }}
+                            {{ trans('cruds.user.fields.email_verified_at') }}
                         </th>
                         <th>
                             &nbsp;
@@ -61,18 +67,16 @@
                                 {{ $user->name ?? '' }}
                             </td>
                             <td>
-                                {{ $user->phone_number ?? '' }}
+                                {{ $user->other_names ?? '' }}
+                            </td>
+                            <td>
+                                {{ $user->phone ?? '' }}
                             </td>
                             <td>
                                 {{ $user->email ?? '' }}
                             </td>
                             <td>
-                                {{ $user->email_verified_at ?? '' }}
-                            </td>
-                            <td>
-                                @foreach($user->roles as $key => $item)
-                                    <span class="badge badge-info">{{ $item->title }}</span>
-                                @endforeach
+                                {{ $user->verified ? trans('global.yes') : trans('global.no') }}
                             </td>
                             <td>
                                 @if($user->profile_photo)
@@ -80,6 +84,14 @@
                                         <img src="{{ $user->profile_photo->getUrl('thumb') }}" width="50px" height="50px">
                                     </a>
                                 @endif
+                            </td>
+                            <td>
+                                @foreach($user->roles as $key => $item)
+                                    <span class="badge badge-info">{{ $item->title }}</span>
+                                @endforeach
+                            </td>
+                            <td>
+                                {{ $user->email_verified_at ?? '' }}
                             </td>
                             <td>
                                 @can('user_show')

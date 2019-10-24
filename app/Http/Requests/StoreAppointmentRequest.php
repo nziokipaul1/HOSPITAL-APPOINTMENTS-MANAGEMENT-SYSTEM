@@ -19,23 +19,23 @@ class StoreAppointmentRequest extends FormRequest
     public function rules()
     {
         return [
-            'client_id'         => [
+            'hospital_id'    => [
                 'required',
                 'integer',
             ],
-            'service_booked_id' => [
+            'department_id'  => [
                 'required',
                 'integer',
             ],
-            'doctor_id'         => [
+            'doctor_id'      => [
                 'required',
                 'integer',
             ],
-            'hospital_id'       => [
+            'client_id'      => [
                 'required',
                 'integer',
             ],
-            'date_and_time'     => [
+            'scheduled_time' => [
                 'required',
                 'date_format:' . config('panel.date_format') . ' ' . config('panel.time_format'),
             ],
