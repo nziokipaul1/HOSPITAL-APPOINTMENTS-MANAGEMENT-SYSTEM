@@ -120,9 +120,17 @@
   let languages = {
     'en': 'https://cdn.datatables.net/plug-ins/1.10.19/i18n/English.json',
         'es': 'https://cdn.datatables.net/plug-ins/1.10.19/i18n/Spanish.json',
+        'pt': 'https://cdn.datatables.net/plug-ins/1.10.19/i18n/Portuguese.json',
         'ar': 'https://cdn.datatables.net/plug-ins/1.10.19/i18n/Arabic.json',
+        'de': 'https://cdn.datatables.net/plug-ins/1.10.19/i18n/German.json',
+        'nl': 'https://cdn.datatables.net/plug-ins/1.10.19/i18n/Dutch.json',
         'fr': 'https://cdn.datatables.net/plug-ins/1.10.19/i18n/French.json',
-        'zh-Hans': 'https://cdn.datatables.net/plug-ins/1.10.19/i18n/Chinese.json'
+        'it': 'https://cdn.datatables.net/plug-ins/1.10.19/i18n/Italian.json',
+        'gr': 'https://cdn.datatables.net/plug-ins/1.10.19/i18n/Greek.json',
+        'zh': 'https://cdn.datatables.net/plug-ins/1.10.19/i18n/Chinese-traditional.json',
+        'zh-Hans': 'https://cdn.datatables.net/plug-ins/1.10.19/i18n/Chinese.json',
+        'hi': 'https://cdn.datatables.net/plug-ins/1.10.19/i18n/Hindi.json',
+        'he': 'https://cdn.datatables.net/plug-ins/1.10.19/i18n/Hebrew.json'
   };
 
   $.extend(true, $.fn.dataTable.Buttons.defaults.dom.button, { className: 'btn' })

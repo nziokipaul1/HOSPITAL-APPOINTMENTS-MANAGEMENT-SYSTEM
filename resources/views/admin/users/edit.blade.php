@@ -22,16 +22,28 @@
                     {{ trans('cruds.user.fields.name_helper') }}
                 </p>
             </div>
-            <div class="form-group {{ $errors->has('phone_number') ? 'has-error' : '' }}">
-                <label for="phone_number">{{ trans('cruds.user.fields.phone_number') }}*</label>
-                <input type="text" id="phone_number" name="phone_number" class="form-control" value="{{ old('phone_number', isset($user) ? $user->phone_number : '') }}" required>
-                @if($errors->has('phone_number'))
+            <div class="form-group {{ $errors->has('other_names') ? 'has-error' : '' }}">
+                <label for="other_names">{{ trans('cruds.user.fields.other_names') }}*</label>
+                <input type="text" id="other_names" name="other_names" class="form-control" value="{{ old('other_names', isset($user) ? $user->other_names : '') }}" required>
+                @if($errors->has('other_names'))
                     <p class="help-block">
-                        {{ $errors->first('phone_number') }}
+                        {{ $errors->first('other_names') }}
                     </p>
                 @endif
                 <p class="helper-block">
-                    {{ trans('cruds.user.fields.phone_number_helper') }}
+                    {{ trans('cruds.user.fields.other_names_helper') }}
+                </p>
+            </div>
+            <div class="form-group {{ $errors->has('phone') ? 'has-error' : '' }}">
+                <label for="phone">{{ trans('cruds.user.fields.phone') }}*</label>
+                <input type="text" id="phone" name="phone" class="form-control" value="{{ old('phone', isset($user) ? $user->phone : '') }}" required>
+                @if($errors->has('phone'))
+                    <p class="help-block">
+                        {{ $errors->first('phone') }}
+                    </p>
+                @endif
+                <p class="helper-block">
+                    {{ trans('cruds.user.fields.phone_helper') }}
                 </p>
             </div>
             <div class="form-group {{ $errors->has('email') ? 'has-error' : '' }}">
@@ -46,23 +58,25 @@
                     {{ trans('cruds.user.fields.email_helper') }}
                 </p>
             </div>
-            <div class="form-group {{ $errors->has('password') ? 'has-error' : '' }}">
-                <label for="password">{{ trans('cruds.user.fields.password') }}</label>
-                <input type="password" id="password" name="password" class="form-control">
-                @if($errors->has('password'))
+            <div class="form-group {{ $errors->has('profile_photo') ? 'has-error' : '' }}">
+                <label for="profile_photo">{{ trans('cruds.user.fields.profile_photo') }}</label>
+                <div class="needsclick dropzone" id="profile_photo-dropzone">
+
+                </div>
+                @if($errors->has('profile_photo'))
                     <p class="help-block">
-                        {{ $errors->first('password') }}
+                        {{ $errors->first('profile_photo') }}
                     </p>
                 @endif
                 <p class="helper-block">
-                    {{ trans('cruds.user.fields.password_helper') }}
+                    {{ trans('cruds.user.fields.profile_photo_helper') }}
                 </p>
             </div>
             <div class="form-group {{ $errors->has('roles') ? 'has-error' : '' }}">
-                <label for="roles">{{ trans('cruds.user.fields.roles') }}
+                <label for="roles">{{ trans('cruds.user.fields.roles') }}*
                     <span class="btn btn-info btn-xs select-all">{{ trans('global.select_all') }}</span>
                     <span class="btn btn-info btn-xs deselect-all">{{ trans('global.deselect_all') }}</span></label>
-                <select name="roles[]" id="roles" class="form-control select2" multiple="multiple">
+                <select name="roles[]" id="roles" class="form-control select2" multiple="multiple" required>
                     @foreach($roles as $id => $roles)
                         <option value="{{ $id }}" {{ (in_array($id, old('roles', [])) || isset($user) && $user->roles->contains($id)) ? 'selected' : '' }}>{{ $roles }}</option>
                     @endforeach
@@ -76,18 +90,16 @@
                     {{ trans('cruds.user.fields.roles_helper') }}
                 </p>
             </div>
-            <div class="form-group {{ $errors->has('profile_photo') ? 'has-error' : '' }}">
-                <label for="profile_photo">{{ trans('cruds.user.fields.profile_photo') }}</label>
-                <div class="needsclick dropzone" id="profile_photo-dropzone">
-
-                </div>
-                @if($errors->has('profile_photo'))
+            <div class="form-group {{ $errors->has('password') ? 'has-error' : '' }}">
+                <label for="password">{{ trans('cruds.user.fields.password') }}</label>
+                <input type="password" id="password" name="password" class="form-control">
+                @if($errors->has('password'))
                     <p class="help-block">
-                        {{ $errors->first('profile_photo') }}
+                        {{ $errors->first('password') }}
                     </p>
                 @endif
                 <p class="helper-block">
-                    {{ trans('cruds.user.fields.profile_photo_helper') }}
+                    {{ trans('cruds.user.fields.password_helper') }}
                 </p>
             </div>
             <div>
@@ -131,7 +143,7 @@
 @if(isset($user) && $user->profile_photo)
       var file = {!! json_encode($user->profile_photo) !!}
           this.options.addedfile.call(this, file)
-      this.options.thumbnail.call(this, file, file.url)
+      this.options.thumbnail.call(this, file, '{{ $user->profile_photo->getUrl('thumb') }}')
       file.previewElement.classList.add('dz-complete')
       $('form').append('<input type="hidden" name="profile_photo" value="' + file.file_name + '">')
       this.options.maxFiles = this.options.maxFiles - 1

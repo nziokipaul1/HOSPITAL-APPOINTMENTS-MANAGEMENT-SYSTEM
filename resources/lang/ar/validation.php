@@ -34,7 +34,7 @@ return [
     'gt'                             => [
         'numeric' => 'يجب أن يكون :attribute أكبر من :value  .',
         'file'    => 'يجب أن يكون :attribute أكبر من :value كيلوبايت.',
-        'string'  => 'The :attribute must be greater than :value characters.',
+        'string'  => 'يجب أن يكون',
         'array'   => 'يجب أن يحتوي :attribute على أكثر من: value عناصر .',
     ],
     'gte'                            => [
@@ -80,6 +80,7 @@ return [
     'not_in'                         => 'The selected :attribute is invalid.',
     'not_regex'                      => 'The :attribute format is invalid.',
     'numeric'                        => 'The :attribute must be a number.',
+    'password'                       => 'The password is incorrect.',
     'present'                        => 'The :attribute field must be present.',
     'regex'                          => 'The :attribute format is invalid.',
     'required'                       => 'The :attribute field is required.',

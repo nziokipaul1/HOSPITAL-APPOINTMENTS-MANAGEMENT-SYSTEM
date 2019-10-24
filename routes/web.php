@@ -1,8 +1,16 @@
 <?php
 
 Route::redirect('/', '/login');
-Route::redirect('/home', '/admin');
-Auth::routes(['register' => false]);
+Route::get('/home', function () {
+    if (session('status')) {
+        return redirect()->route('admin.home')->with('status', session('status'));
+    }
+
+    return redirect()->route('admin.home');
+});
+
+Auth::routes();
+Route::get('userVerification/{token}', 'UserVerificationController@approve')->name('userVerification');
 
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['auth']], function () {
     Route::get('/', 'HomeController@index')->name('home');
@@ -19,42 +27,38 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('users/media', 'UsersController@storeMedia')->name('users.storeMedia');
     Route::resource('users', 'UsersController');
 
-    // Managehospitals
-    Route::delete('manage-hospitals/destroy', 'ManageHospitalsController@massDestroy')->name('manage-hospitals.massDestroy');
-    Route::resource('manage-hospitals', 'ManageHospitalsController');
+    // Hospitals
+    Route::delete('hospitals/destroy', 'HospitalController@massDestroy')->name('hospitals.massDestroy');
+    Route::post('hospitals/media', 'HospitalController@storeMedia')->name('hospitals.storeMedia');
+    Route::resource('hospitals', 'HospitalController');
 
-    // Taskstatuses
-    Route::delete('task-statuses/destroy', 'TaskStatusController@massDestroy')->name('task-statuses.massDestroy');
-    Route::resource('task-statuses', 'TaskStatusController');
-
-    // Tasktags
-    Route::delete('task-tags/destroy', 'TaskTagController@massDestroy')->name('task-tags.massDestroy');
-    Route::resource('task-tags', 'TaskTagController');
-
-    // Tasks
-    Route::delete('tasks/destroy', 'TaskController@massDestroy')->name('tasks.massDestroy');
-    Route::post('tasks/media', 'TaskController@storeMedia')->name('tasks.storeMedia');
-    Route::resource('tasks', 'TaskController');
-
-    // Taskscalendars
-    Route::resource('tasks-calendars', 'TasksCalendarController', ['except' => ['create', 'store', 'edit', 'update', 'show', 'destroy']]);
-
-    // Managebranches
-    Route::delete('manage-branches/destroy', 'ManageBranchesController@massDestroy')->name('manage-branches.massDestroy');
-    Route::resource('manage-branches', 'ManageBranchesController');
-
-    // Employees
-    Route::delete('employees/destroy', 'EmployeesController@massDestroy')->name('employees.massDestroy');
-    Route::resource('employees', 'EmployeesController');
+    // Branches
+    Route::delete('branches/destroy', 'BranchController@massDestroy')->name('branches.massDestroy');
+    Route::resource('branches', 'BranchController');
 
     // Services
     Route::delete('services/destroy', 'ServicesController@massDestroy')->name('services.massDestroy');
+    Route::post('services/media', 'ServicesController@storeMedia')->name('services.storeMedia');
     Route::resource('services', 'ServicesController');
+
+    // Doctors
+    Route::delete('doctors/destroy', 'DoctorsController@massDestroy')->name('doctors.massDestroy');
+    Route::resource('doctors', 'DoctorsController');
 
     // Appointments
     Route::delete('appointments/destroy', 'AppointmentsController@massDestroy')->name('appointments.massDestroy');
     Route::resource('appointments', 'AppointmentsController');
 
-    // Settings
-    Route::resource('settings', 'SettingsController', ['except' => ['create', 'store', 'edit', 'update', 'show', 'destroy']]);
+    // Profiles
+    Route::resource('profiles', 'ProfileController', ['except' => ['create', 'store', 'edit', 'update', 'show', 'destroy']]);
+
+    Route::get('messenger', 'MessengerController@index')->name('messenger.index');
+    Route::get('messenger/create', 'MessengerController@createTopic')->name('messenger.createTopic');
+    Route::post('messenger', 'MessengerController@storeTopic')->name('messenger.storeTopic');
+    Route::get('messenger/inbox', 'MessengerController@showInbox')->name('messenger.showInbox');
+    Route::get('messenger/outbox', 'MessengerController@showOutbox')->name('messenger.showOutbox');
+    Route::get('messenger/{topic}', 'MessengerController@showMessages')->name('messenger.showMessages');
+    Route::delete('messenger/{topic}', 'MessengerController@destroyTopic')->name('messenger.destroyTopic');
+    Route::post('messenger/{topic}/reply', 'MessengerController@replyToTopic')->name('messenger.reply');
+    Route::get('messenger/{topic}/reply', 'MessengerController@showReply')->name('messenger.showReply');
 });
